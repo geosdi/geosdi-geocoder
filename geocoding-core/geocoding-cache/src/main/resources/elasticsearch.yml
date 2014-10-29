@@ -1,0 +1,4 @@
+cluster.name: elasticsearch
+network.host: localhost
+network.transport.tcp.port: 9300
+#es.nodes: Mauler
