@@ -7,7 +7,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Service :: == geoSDI Geocoding</name>
+    <name>Service :: == geoSDI Geocoder</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -168,8 +168,8 @@
     </build>
     
     <modules>
-        <module>geocoding-ws</module>
-        <module>geocoding-core</module>
+        <module>geocoder-ws</module>
+        <module>geocoder-core</module>
     </modules>
     
 </project>

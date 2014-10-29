@@ -5,22 +5,22 @@
     
     <parent>
         <groupId>org.geosdi</groupId>
-        <artifactId>geocoding-ws</artifactId>
+        <artifactId>geocoder-ws</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     
     <groupId>org.geosdi</groupId>
-    <artifactId>geocoding-webapp</artifactId>
+    <artifactId>geocoder-webapp</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
     
-    <name>Service :: == geoSDI Geocoding Webapp</name>
+    <name>Service :: == geoSDI Geocoder Webapp</name>
 
     <dependencies>
         
         <dependency>
             <groupId>org.geosdi</groupId>
-            <artifactId>geocoding-impl</artifactId>
+            <artifactId>geocoder-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
         
@@ -190,7 +190,7 @@
     <build>
         <defaultGoal>jetty:run</defaultGoal>
         <!-- Name of the generated WAR file -->
-        <finalName>geocoding-services</finalName>
+        <finalName>geocoder-services</finalName>
         
         <outputDirectory>war/WEB-INF/classes</outputDirectory>
         <plugins>
@@ -234,7 +234,7 @@
                     <stopKey>kill</stopKey>
                     <stopPort>9797</stopPort>
                     <webApp>
-                        <contextPath>/geocoding-services</contextPath>
+                        <contextPath>/geocoder-services</contextPath>
                     </webApp>
                     <contextXml>${basedir}/war/WEB-INF/jetty-context.xml</contextXml>
                     <webXml>${basedir}/war/WEB-INF/web.xml</webXml>
@@ -265,10 +265,10 @@
                     <deployables>
                         <deployable>
                             <groupId>org.geosdi</groupId>
-                            <artifactId>geocoding-webapp</artifactId>
+                            <artifactId>geocoder-webapp</artifactId>
                             <type>war</type>
                             <properties>
-                                <context>/geocoding-services</context>
+                                <context>/geocoder-services</context>
                             </properties>
                         </deployable>                           
                     </deployables>
