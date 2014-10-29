@@ -7,34 +7,34 @@ package org.geosdi.geocoding.cache;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.model.GeocodingResult;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
-import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.suggest.SuggestRequestBuilder;
 import org.elasticsearch.action.suggest.SuggestResponse;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.cluster.ClusterState;
+import org.elasticsearch.cluster.metadata.IndexMetaData;
+import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.Lists;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.indices.IndexAlreadyExistsException;
-import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
+import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.suggest.Suggest;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.geosdi.geocoding.model.elasticbean.ELGeocodingBean;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Nazzareno Sileno - CNR IMAA geoSDI Group
@@ -42,8 +42,10 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class GeocodingElCache implements InitializingBean {
 
-    private final static String GEOCODING_INDEX = "geosdi_geocoding";
-    private final static String GEOCODING_TYPE = "geocoding_type";
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final static String GEOCODER_INDEX = "geosdi_geocoder";
+    private final static String GEOCODER_TYPE = "geocoder_type";
 
 //    Node node = nodeBuilder().client(true).node();
 //    Client client = node.client();
@@ -58,7 +60,7 @@ public class GeocodingElCache implements InitializingBean {
         for (GeocodingResult result : geocodingResults) {
             try {
 //                String json = mapper.writeValueAsString(result);
-                bulkRequest.add(client.prepareIndex(GEOCODING_INDEX, GEOCODING_TYPE)
+                bulkRequest.add(client.prepareIndex(GEOCODER_INDEX, GEOCODER_TYPE)
                         .setSource(XContentFactory.jsonBuilder().
                                 startObject().
                                 field("acquisitionTime", new Date()).
@@ -81,13 +83,13 @@ public class GeocodingElCache implements InitializingBean {
 //                        .setSource(json));
 //                        .execute()
 //                        .actionGet());
-                client.prepareSuggest(GEOCODING_INDEX).addSuggestion(
+                client.prepareSuggest(GEOCODER_INDEX).addSuggestion(
                         new CompletionSuggestionBuilder("suggestion").field("formattedAddress")
                         .text(result.formattedAddress).size(1)).execute().actionGet();
             } catch (JsonProcessingException ex) {
-                Logger.getLogger(GeocodingElCache.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error(GeocodingElCache.class.getName() + "Error processing JSON: " + ex);
             } catch (IOException ex) {
-                Logger.getLogger(GeocodingElCache.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error(GeocodingElCache.class.getName() + "Error writing geocoding result: " + ex);
             }
         }
         BulkResponse bulkResponse = bulkRequest.execute().actionGet();
@@ -103,7 +105,7 @@ public class GeocodingElCache implements InitializingBean {
         compBuilder.field("suggest");
 
         SuggestRequestBuilder suggestRequestBuilder
-                = client.prepareSuggest(GEOCODING_INDEX).addSuggestion(compBuilder);
+                = client.prepareSuggest(GEOCODER_INDEX).addSuggestion(compBuilder);
 
 //        SearchResponse searchResponse = client.prepareSearch(GEOCODING_INDEX)
 //                .setTypes("completion")
@@ -126,7 +128,7 @@ public class GeocodingElCache implements InitializingBean {
                 items.add(geocodingBean);
 //            items.add(new SuggestionResponse(next.getText().string()));
             } catch (IOException ex) {
-                Logger.getLogger(GeocodingElCache.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error(GeocodingElCache.class.getName() + "Error reading suggest: " + ex);
             }
         }
         return items;
@@ -138,86 +140,116 @@ public class GeocodingElCache implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        Node node = nodeBuilder().loadConfigSettings(true).client(false).node();
-        this.client = node.client();
-//        this.client = new TransportClient().addTransportAddress(new InetSocketTransportAddress(
-//                "localhost", 9300));
-        CreateIndexRequestBuilder cirb = client.admin().indices().prepareCreate(GEOCODING_INDEX);
-        CreateIndexResponse createIndexResponse = null;
+//        Node node = nodeBuilder().loadConfigSettings(true).client(true).node();
+//        this.client = node.client();
+        this.client = new TransportClient().addTransportAddress(new InetSocketTransportAddress(
+                "localhost", 9300));
+        CreateIndexRequestBuilder cirb = client.admin().indices().prepareCreate(GEOCODER_INDEX);
         try {
-            createIndexResponse = cirb.execute().actionGet();
+//        !client.admin().indices().prepareExists(GEOCODER_INDEX).execute().actionGet().isExists()
+            cirb.execute().actionGet();
         } catch (IndexAlreadyExistsException e) {
-            // Index already exists
-            return;
+            logger.warn("Warning the elasticsearch index: " + GEOCODER_INDEX
+                    + " not created, already exists?");
         }
-        if (!client.admin().indices().prepareExists(GEOCODING_INDEX).execute().actionGet().isExists()) {
-
+        if (!this.mappingAlreadyExists()) {
             try {
-                XContentBuilder builder = XContentFactory.jsonBuilder().startObject().
-                        startObject("type").
-                        field("dynamic", "strict").
-                        startObject("_id").
-                        field("path", "id").
-                        endObject().
-                        startObject("_all").
-                        field("enabled", "true").
-                        endObject().
-                        startObject("properties").
-                        startObject("acquisitionTime").
-                        field("type", "date").
-                        field("store", "yes").
-                        field("index", "not_analyzed").
-                        endObject().
-                        startObject("language").
-                        field("type", "string").
-                        field("store", "yes").
-                        field("index", "not_analyzed").
-                        endObject().
-                        startObject("formattedAddress").
-                        field("type", "string").
-                        field("store", "yes").
-                        field("index", "analyzed").
-                        endObject().
-                        startObject("geometryLocation").
-                        field("type", "geo_point").
-                        field("store", "yes").
-                        field("lat_lon", true).
-                        field("index", "not_analyzed").
-                        endObject().
-                        startObject("boundsSouthwest").
-                        field("type", "geo_point").
-                        field("store", "yes").
-                        field("lat_lon", true).
-                        field("index", "not_analyzed").
-                        endObject().
-                        startObject("boundsNortheast").
-                        field("type", "geo_point").
-                        field("store", "yes").
-                        field("lat_lon", true).
-                        field("index", "not_analyzed").
-                        endObject()
-                        .startObject("suggest")
-                        .field("type", "completion")
-                        .field("preserve_separators", false)
-                        .field("preserve_position_increments", false)
-                        .endObject()
-                        .endObject().endObject();
+                XContentBuilder builder = XContentFactory.jsonBuilder()
+                        .startObject()
+                            .startObject(GEOCODER_TYPE).
+                                field("dynamic", "strict").
+//                                startObject("_id").
+//                                    field("path", "id")
+//                                .endObject().
+//                                startObject("_all").
+//                                    field("enabled", "true").
+//                                endObject().
+                                startObject("properties").
+                                    startObject("acquisitionTime").
+                                        field("type", "date").
+                                        field("store", "yes").
+                                        field("index", "not_analyzed").
+                                    endObject().
+                                    startObject("language").
+                                        field("type", "string").
+                                        field("store", "yes").
+                                        field("index", "not_analyzed").
+                                    endObject().
+                                    startObject("formattedAddress").
+                                        field("type", "string").
+                                        field("store", "yes").
+                                        field("index", "analyzed").
+                                    endObject().
+                                    startObject("geometryLocation").
+                                        field("type", "geo_point").
+                                        field("store", "yes").
+                                        field("lat_lon", true).
+                                        field("index", "not_analyzed").
+                                    endObject().
+                                    startObject("boundsSouthwest").
+                                        field("type", "geo_point").
+                                        field("store", "yes").
+                                        field("lat_lon", true).
+                                        field("index", "not_analyzed").
+                                    endObject().
+                                    startObject("boundsNortheast").
+                                        field("type", "geo_point").
+                                        field("store", "yes").
+                                        field("lat_lon", true).
+                                        field("index", "not_analyzed").
+                                    endObject()
+                                    .startObject("suggest")
+                                        .field("type", "completion")
+                                        .field("preserve_separators", false)
+                                        .field("preserve_position_increments", false)
+                                    .endObject().
+                                endObject().
+                            endObject()
+                        .endObject();
                 PutMappingResponse response = client.admin().
                         indices().
-                        preparePutMapping(GEOCODING_INDEX).
-                        setType(GEOCODING_TYPE).
+                        preparePutMapping(GEOCODER_INDEX).
+                        setType(GEOCODER_TYPE).
                         setSource(builder).
                         execute().
                         actionGet();
                 if (response.isAcknowledged()) {
                     // Type and Mapping created!
+                    logger.info("Elasticsearch geocoding mapping created");
                 } else {
-                    // Failed to create type and mapping
+                    logger.info("WARNING: Elasticsearch geocoding mapping not created");
                 }
             } catch (IOException ex) {
-                Logger.getLogger(GeocodingElCache.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error(GeocodingElCache.class.getName() + "Error writing mapping: " + ex);
             }
 
+        } else {
+            logger.error(GeocodingElCache.class.getName() + " Cannot create mapping");
         }
+    }
+
+    private boolean mappingAlreadyExists() {
+        boolean result = false;
+        try {
+            ClusterState cs = client.admin().
+                    cluster().
+                    prepareState().
+                    setIndices(GEOCODER_INDEX).
+                    execute().
+                    actionGet().
+                    getState();
+
+            IndexMetaData imd = cs.getMetaData().index(GEOCODER_INDEX);
+
+            MappingMetaData mdd = imd.mapping(GEOCODER_TYPE);
+            if (mdd != null) {
+                result = true;
+                logger.info("Mapping as JSON string:" + mdd.source());
+            }
+        } catch (IndexMissingException e) {
+            logger.error("Warning the elasticsearch index: " + GEOCODER_INDEX
+                    + " does not exists!");
+        }
+        return result;
     }
 }
