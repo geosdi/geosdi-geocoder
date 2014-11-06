@@ -74,90 +74,92 @@ public class GeocoderElCache implements InitializingBean {
 
     public void persistGeocodingResults(List<GeocodingResult> geocodingResults,
             String language, String originalQuery) {
-        for (GeocodingResult result : geocodingResults) {
-            logger.info("********** Looking for formatted address: " + result.formattedAddress);
-            SearchResponse response = client.prepareSearch(GEOCODER_INDEX).
-                    setTypes(GEOCODER_TYPE).setQuery(QueryBuilders.
-                            termQuery("formattedAddress", result.formattedAddress))
-                    .execute().actionGet();
-            if (response != null && response.getHits().getTotalHits() > 0) {
-                String responseJson = response.toString();
-                int startSourceIndex = responseJson.indexOf("\"_source\":") + "\"_source\":".length();
-                responseJson = responseJson.substring(startSourceIndex);
-                logger.info("**********Response JSON _source: " + responseJson);
+        if (geocodingResults != null) {
+            for (GeocodingResult result : geocodingResults) {
+                logger.info("********** Looking for formatted address: " + result.formattedAddress);
+                SearchResponse response = client.prepareSearch(GEOCODER_INDEX).
+                        setTypes(GEOCODER_TYPE).setQuery(QueryBuilders.
+                                termQuery("formattedAddress", result.formattedAddress))
+                        .execute().actionGet();
+                if (response != null && response.getHits().getTotalHits() > 0) {
+                    String responseJson = response.toString();
+                    int startSourceIndex = responseJson.indexOf("\"_source\":") + "\"_source\":".length();
+                    responseJson = responseJson.substring(startSourceIndex);
+                    logger.info("**********Response JSON _source: " + responseJson);
 
-                LocationDoc locationDoc = null;
-                try {
-                    locationDoc = this.mapper.readValue(responseJson, LocationDoc.class);
-                    logger.info("Location DOC mapped: " + locationDoc);
-                } catch (IOException ex) {
-                    logger.error("***************** Error parsing location doc: " + ex);
-                }
+                    LocationDoc locationDoc = null;
+                    try {
+                        locationDoc = this.mapper.readValue(responseJson, LocationDoc.class);
+                        logger.info("Location DOC mapped: " + locationDoc);
+                    } catch (IOException ex) {
+                        logger.error("***************** Error parsing location doc: " + ex);
+                    }
 
-                boolean foundToken = false;
-                if (locationDoc != null && locationDoc.getSuggest() != null
-                        && locationDoc.getSuggest().getInput() != null) {
-                    for (String input : locationDoc.getSuggest().getInput()) {
-                        logger.info("Looking into nex input field..: " + input);
-                        if (input.toLowerCase().contains(originalQuery.toLowerCase())) {
-                            logger.info("##### Input found!");
-                            foundToken = true;
-                            break;
+                    boolean foundToken = false;
+                    if (locationDoc != null && locationDoc.getSuggest() != null
+                            && locationDoc.getSuggest().getInput() != null) {
+                        for (String input : locationDoc.getSuggest().getInput()) {
+                            logger.info("Looking into nex input field..: " + input);
+                            if (input.toLowerCase().contains(originalQuery.toLowerCase())) {
+                                logger.info("##### Input found!");
+                                foundToken = true;
+                                break;
+                            }
                         }
+
                     }
 
-                }
-
-                if (!foundToken) {
-                    logger.info("##### New data input not found!");
-                    client.prepareUpdate(GEOCODER_INDEX, GEOCODER_TYPE, response.getHits().getAt(0).getId())
-                            .addScriptParam("originalQuery", originalQuery)
-                            .setScript("ctx._source.suggest.input += originalQuery", ScriptService.ScriptType.INLINE)
-                            .setScriptLang("groovy")
-                            //                            .setRefresh(true)
-                            .execute().actionGet();
-                }
-            } else {
-                try {
-                    String _id = UUID.randomUUID().toString();
-                    BulkRequestBuilder bulkRequest = client.prepareBulk();
-                    bulkRequest.add(client.prepareIndex(GEOCODER_INDEX, GEOCODER_TYPE, _id)
-                            .setSource(XContentFactory.jsonBuilder().
-                                    startObject().
-                                    field("acquisitionTime", new Date()).
-                                    field("language", language).
-                                    field("formattedAddress", result.formattedAddress).
-                                    startObject("geometryLocation").
-                                    field("lat", result.geometry.location.lat).
-                                    field("lon", result.geometry.location.lng).
-                                    endObject().
-                                    startObject("boundsSouthwest").
-                                    field("lat", result.geometry.bounds != null ? result.geometry.bounds.southwest.lat : result.geometry.viewport.southwest.lat).
-                                    field("lon", result.geometry.bounds != null ? result.geometry.bounds.southwest.lng : result.geometry.viewport.southwest.lng).
-                                    //field("lon", result.geometry.bounds.southwest.lng).
-                                    endObject().
-                                    startObject("boundsNortheast").
-                                    field("lat", result.geometry.bounds != null ? result.geometry.bounds.northeast.lat : result.geometry.viewport.northeast.lat).
-                                    field("lon", result.geometry.bounds != null ? result.geometry.bounds.northeast.lng : result.geometry.viewport.northeast.lng).
-                                    endObject().
-                                    startObject(SUGGEST_FIELD).
-                                    array("input", result.formattedAddress, originalQuery).
-                                    startObject("payload").
-                                    field(SUGGEST_PAYLOAD_FIELD, _id).
-                                    endObject().
-                                    field("output", result.formattedAddress).
-                                    endObject().
-                                    endObject()
-                            ));
-                    BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-                    if (bulkResponse.hasFailures()) {
-                        throw new IllegalArgumentException("Error writing geocoding results: "
-                                + bulkResponse.buildFailureMessage());
+                    if (!foundToken) {
+                        logger.info("##### New data input not found!");
+                        client.prepareUpdate(GEOCODER_INDEX, GEOCODER_TYPE, response.getHits().getAt(0).getId())
+                                .addScriptParam("originalQuery", originalQuery)
+                                .setScript("ctx._source.suggest.input += originalQuery", ScriptService.ScriptType.INLINE)
+                                .setScriptLang("groovy")
+                                //                            .setRefresh(true)
+                                .execute().actionGet();
                     }
-                } catch (JsonProcessingException ex) {
-                    logger.error(GeocoderElCache.class.getName() + "Error processing JSON: " + ex);
-                } catch (IOException ex) {
-                    logger.error(GeocoderElCache.class.getName() + "Error writing geocoding result: " + ex);
+                } else {
+                    try {
+                        String _id = UUID.randomUUID().toString();
+                        BulkRequestBuilder bulkRequest = client.prepareBulk();
+                        bulkRequest.add(client.prepareIndex(GEOCODER_INDEX, GEOCODER_TYPE, _id)
+                                .setSource(XContentFactory.jsonBuilder().
+                                        startObject().
+                                        field("acquisitionTime", new Date()).
+                                        field("language", language).
+                                        field("formattedAddress", result.formattedAddress).
+                                        startObject("geometryLocation").
+                                        field("lat", result.geometry.location.lat).
+                                        field("lon", result.geometry.location.lng).
+                                        endObject().
+                                        startObject("boundsSouthwest").
+                                        field("lat", result.geometry.bounds != null ? result.geometry.bounds.southwest.lat : result.geometry.viewport.southwest.lat).
+                                        field("lon", result.geometry.bounds != null ? result.geometry.bounds.southwest.lng : result.geometry.viewport.southwest.lng).
+                                        //field("lon", result.geometry.bounds.southwest.lng).
+                                        endObject().
+                                        startObject("boundsNortheast").
+                                        field("lat", result.geometry.bounds != null ? result.geometry.bounds.northeast.lat : result.geometry.viewport.northeast.lat).
+                                        field("lon", result.geometry.bounds != null ? result.geometry.bounds.northeast.lng : result.geometry.viewport.northeast.lng).
+                                        endObject().
+                                        startObject(SUGGEST_FIELD).
+                                        array("input", result.formattedAddress, originalQuery).
+                                        startObject("payload").
+                                        field(SUGGEST_PAYLOAD_FIELD, _id).
+                                        endObject().
+                                        field("output", result.formattedAddress).
+                                        endObject().
+                                        endObject()
+                                ));
+                        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+                        if (bulkResponse.hasFailures()) {
+                            throw new IllegalArgumentException("Error writing geocoding results: "
+                                    + bulkResponse.buildFailureMessage());
+                        }
+                    } catch (JsonProcessingException ex) {
+                        logger.error(GeocoderElCache.class.getName() + "Error processing JSON: " + ex);
+                    } catch (IOException ex) {
+                        logger.error(GeocoderElCache.class.getName() + "Error writing geocoding result: " + ex);
+                    }
                 }
             }
         }

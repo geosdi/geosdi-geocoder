@@ -83,13 +83,13 @@ class GeocoderGoogleServiceImpl {
         List<GCGeocodingResult> gcResults = null;
         List<GeocodingResult> geocodingResults = null;
         try {
-            logger.info("Executing geocode: ");
+            logger.debug("Executing geocode: ");
             GeocodingResult[] result = req.await();
-            logger.info(" GeocodingResult[] result: " + result);
+            logger.debug(" GeocodingResult[] result: " + result);
             geocodingResults = Arrays.asList(result);
-            logger.info("Arrays.asList geocodingResults: " + geocodingResults);
+            logger.debug("Arrays.asList geocodingResults: " + geocodingResults);
             gcResults = this.convertGeocodingResult(result);
-            logger.info("this.convertGeocodingResult Executing geocode: " + gcResults);
+            logger.debug("this.convertGeocodingResult Executing geocode: " + gcResults);
             this.geocoderElCache.persistGeocodingResults(geocodingResults, language, queryAddress);
         } catch (Exception e) {
             logger.error("Error executing geocode: " + e.getCause().toString());
