@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.geosdi.geocoding.model;
+package org.geosdi.geocoder.model;
 
 import java.io.Serializable;
 import java.util.logging.Logger;

@@ -3,11 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.geosdi.geocoding.model;
+package org.geosdi.geocoder.model;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -24,7 +27,9 @@ public class GCGeocodingResult implements Serializable {
      * {@code addressComponents} is an array containing the separate address
      * components.
      */
-    public GCAddressComponent[] addressComponents;
+    @XmlElementWrapper(name = "addressComponentList")
+    @XmlElement(name = "addressComponent")
+    public List<GCAddressComponent> addressComponents;
 
     /**
      * {@code formattedAddress} is the human-readable address of this location.
@@ -44,7 +49,7 @@ public class GCGeocodingResult implements Serializable {
      * contained in a postal code. This is only present when the result is a
      * postal code that contains multiple localities.
      */
-    public String[] postcodeLocalities;
+    public List<String> postcodeLocalities;
 
     /**
      * {@code geometry} contains location information.
@@ -58,7 +63,9 @@ public class GCGeocodingResult implements Serializable {
      * "locality" which indicates that "Chicago" is a city, and also returns
      * "political" which indicates it is a political entity.
      */
-    public GCAddressType[] types;
+    @XmlElementWrapper(name = "addressTypeList")
+    @XmlElement(name = "addressType")
+    public List<GCAddressType> types;
 
     /**
      * {@code partialMatch} indicates that the geocoder did not return an exact

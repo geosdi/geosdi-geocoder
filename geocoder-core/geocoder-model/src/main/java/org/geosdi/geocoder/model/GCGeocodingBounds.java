@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.geosdi.geocoding.model;
+package org.geosdi.geocoder.model;
 
+import org.geosdi.geocoder.model.elasticbean.ELGeocodingLatLon;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -24,8 +25,8 @@ public class GCGeocodingBounds implements Serializable {
 
     private static final long serialVersionUID = -3892393432680733348L;
 
-    public GCGeocodingLatLng northeast;
-    public GCGeocodingLatLng southwest;
+    public ELGeocodingLatLon northeast;
+    public ELGeocodingLatLon southwest;
 
     public GCGeocodingBounds() {
     }

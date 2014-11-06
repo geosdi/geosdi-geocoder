@@ -1,5 +1,7 @@
+#Use to configure the host and the port into the applicationContex.xml
+#network.host: localhost
+#network.transport.tcp.port: 9300
 cluster.name: elasticsearch
-network.host: localhost
-network.transport.tcp.port: 9300
-node.name: AndyPower
+#node.name: AndyPower
 discovery.zen.ping.multicast.enabled: true
+#script.disable_dynamic: false

@@ -43,8 +43,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.geosdi.geoplatform.exception.ResourceNotFoundFault;
-import org.geosdi.geocoding.model.GCGeocodingResult;
-import org.geosdi.geocoding.model.elasticbean.ELGeocodingBean;
+import org.geosdi.geocoder.model.GCGeocodingResult;
+import org.geosdi.geocoder.model.elasticbean.ELGeocodingBean;
 
 /**
  * Public interface to define the service operations mapped via REST using CXT
@@ -55,24 +55,10 @@ import org.geosdi.geocoding.model.elasticbean.ELGeocodingBean;
  */
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
-public interface GeocodingRestService {
+public interface GeocoderRestService {
 
     static final String GEOCODING_PATH = "/geocoding/";
 
-//    @GET
-//    @Path(GEOCODING_PATH + "{idDevice}/{alias}/{x}/{y}/{elevation}/{accuracy}/{speed}/{compass}/{status}/{uuid}")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    long updateDeviceLocation(@PathParam("idDevice") String idDevice,
-//            @PathParam("alias") String alias,
-//            @PathParam("x") double x,
-//            @PathParam("y") double y,
-//            @PathParam("elevation") double elevation,
-//            @PathParam("accuracy") double accuracy,
-//            @PathParam("speed") double speed,
-//            @PathParam("compass") double compass,
-//            @PathParam("status") String status,
-//            @PathParam("uuid") String uuid)
-//            throws ResourceNotFoundFault;
     @GET
     @Path(GEOCODING_PATH + "execute/{address}/{language}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -80,8 +66,7 @@ public interface GeocodingRestService {
             @PathParam("language") String language) throws ResourceNotFoundFault;
 
     @GET
-    @Path(GEOCODING_PATH + "suggest/{address}/{language}")
+    @Path(GEOCODING_PATH + "suggest/{address}")
     @Consumes(MediaType.APPLICATION_JSON)
-    List<ELGeocodingBean> suggestGeocodignByAddress(@PathParam("address") String address,
-            @PathParam("language") String language) throws ResourceNotFoundFault;
+    List<ELGeocodingBean> suggestGeocodignByAddress(@PathParam("address") String address) throws ResourceNotFoundFault;
 }

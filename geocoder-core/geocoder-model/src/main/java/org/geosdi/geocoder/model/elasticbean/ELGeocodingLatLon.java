@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.geosdi.geocoding.model;
+package org.geosdi.geocoder.model.elasticbean;
 
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -18,39 +18,48 @@ import javax.xml.bind.annotation.XmlRootElement;
  * The latitude of this location.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "geocodingLatLng")
-public class GCGeocodingLatLng implements Serializable {
+@XmlRootElement(name = "geocodingLatLon")
+public class ELGeocodingLatLon implements Serializable {
 
     private static final long serialVersionUID = -7867555074767651501L;
 
-    public double lat;
+    private double lat;
 
     /**
      * The longitude of this location.
      */
-    public double lng;
+    private double lon;
 
-    public GCGeocodingLatLng() {
+    public ELGeocodingLatLon() {
     }
 
     /**
      * Construct a location with a latitude longitude pair.
      */
-    public GCGeocodingLatLng(double lat, double lng) {
+    public ELGeocodingLatLon(double lat, double lon) {
         this.lat = lat;
-        this.lng = lng;
+        this.lon = lon;
     }
 
-//    @Override
-    public String toUrlValue() {
-        // Enforce Locale to English for double to string conversion
-//        return String.format(Locale.ENGLISH, "%f,%f", lat, lng);
-        return "";
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
     }
 
     @Override
     public String toString() {
-        return "GCGeocodingLatLng{" + "lat=" + lat + ", lng=" + lng + '}';
+        return "GCGeocodingLatLng{" + "lat=" + lat + ", lon=" + lon + '}';
     }
 
 }

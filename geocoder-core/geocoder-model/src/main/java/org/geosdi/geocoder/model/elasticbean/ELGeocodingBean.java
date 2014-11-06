@@ -3,14 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.geosdi.geocoding.model.elasticbean;
+package org.geosdi.geocoder.model.elasticbean;
 
 import java.io.Serializable;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.geosdi.geocoding.model.GCGeocodingLatLng;
 
 /**
  * @author Nazzareno Sileno - CNR IMAA geoSDI Group
@@ -24,27 +23,18 @@ public class ELGeocodingBean implements Serializable {
 
     private Date acquisitionTime;
 
-    private String id;
-
+//    private String _id;
     private String language;
 
     private String formattedAddress;
 
-    private GCGeocodingLatLng geometryLocation;
+    private ELGeocodingLatLon geometryLocation;
 
-    private GCGeocodingLatLng boundsSouthwest;
+    private ELGeocodingLatLon boundsSouthwest;
 
-    private GCGeocodingLatLng boundsNortheast;
+    private ELGeocodingLatLon boundsNortheast;
 
     public ELGeocodingBean() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public Date getAcquisitionTime() {
@@ -71,33 +61,33 @@ public class ELGeocodingBean implements Serializable {
         this.formattedAddress = formattedAddress;
     }
 
-    public GCGeocodingLatLng getGeometryLocation() {
+    public ELGeocodingLatLon getGeometryLocation() {
         return geometryLocation;
     }
 
-    public void setGeometryLocation(GCGeocodingLatLng geometryLocation) {
+    public void setGeometryLocation(ELGeocodingLatLon geometryLocation) {
         this.geometryLocation = geometryLocation;
     }
 
-    public GCGeocodingLatLng getBoundsSouthwest() {
+    public ELGeocodingLatLon getBoundsSouthwest() {
         return boundsSouthwest;
     }
 
-    public void setBoundsSouthwest(GCGeocodingLatLng boundsSouthwest) {
+    public void setBoundsSouthwest(ELGeocodingLatLon boundsSouthwest) {
         this.boundsSouthwest = boundsSouthwest;
     }
 
-    public GCGeocodingLatLng getBoundsNortheast() {
+    public ELGeocodingLatLon getBoundsNortheast() {
         return boundsNortheast;
     }
 
-    public void setBoundsNortheast(GCGeocodingLatLng boundsNortheast) {
+    public void setBoundsNortheast(ELGeocodingLatLon boundsNortheast) {
         this.boundsNortheast = boundsNortheast;
     }
 
     @Override
     public String toString() {
-        return "ELGeocodingBean{" + "acquisitionTime=" + acquisitionTime + ", id=" + id + ", language=" + language + ", formattedAddress=" + formattedAddress + ", geometryLocation=" + geometryLocation + ", boundsSouthwest=" + boundsSouthwest + ", boundsNortheast=" + boundsNortheast + '}';
+        return "ELGeocodingBean{" + "acquisitionTime=" + acquisitionTime + ", language=" + language + ", formattedAddress=" + formattedAddress + ", geometryLocation=" + geometryLocation + ", boundsSouthwest=" + boundsSouthwest + ", boundsNortheast=" + boundsNortheast + '}';
     }
 
 }

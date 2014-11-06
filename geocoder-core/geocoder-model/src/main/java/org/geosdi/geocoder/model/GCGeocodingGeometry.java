@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.geosdi.geocoding.model;
+package org.geosdi.geocoder.model;
 
+import org.geosdi.geocoder.model.elasticbean.ELGeocodingLatLon;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -36,7 +37,7 @@ public class GCGeocodingGeometry implements Serializable {
      * {@code location} contains the geocoded {@code latitude,longitude} value.
      * For normal address lookups, this field is typically the most important.
      */
-    public GCGeocodingLatLng location;
+    public ELGeocodingLatLon location;
 
     /**
      * The level of certainty of this geocoding result.

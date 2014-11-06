@@ -36,50 +36,50 @@
 package org.geosdi.geoplatform.services;
 
 import java.util.List;
-import org.geosdi.geocoding.cache.GeocodingElCache;
+import org.geosdi.geocoder.cache.GeocoderElCache;
 import org.geosdi.geoplatform.exception.ResourceNotFoundFault;
-import org.geosdi.geocoding.model.GCGeocodingResult;
-import org.geosdi.geocoding.model.elasticbean.ELGeocodingBean;
+import org.geosdi.geocoder.model.GCGeocodingResult;
+import org.geosdi.geocoder.model.elasticbean.ELGeocodingBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
- * Web Service implementation of {@link GeocodingRestService} endpoint.
+ * Web Service implementation of {@link GeocoderRestService} endpoint.
  *
  * @author Nazzareno Sileno - CNR IMAA geoSDI Group
  * @email nazzareno.sileno@geosdi.org
  */
-@Service("geocodingRestService")
-public class GeocodingRestServiceImpl implements GeocodingRestService {
-    
+@Service("geocoderRestService")
+public class GeocoderRestServiceImpl implements GeocoderRestService {
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     // Delegate
-    private final GeocodingGoogleServiceImpl geocodingGoogleServiceDelegate;
-    
-    private GeocodingElCache geocodingElCache;
-    
-    public void setGeocodingElCache(GeocodingElCache geocodingElCache) {
-        this.geocodingElCache = geocodingElCache;
-        this.geocodingGoogleServiceDelegate.setGeocodingElCache(geocodingElCache);
+    private final GeocoderGoogleServiceImpl geocoderGoogleServiceDelegate;
+
+    private GeocoderElCache geocoderElCache;
+
+    public void setGeocoderElCache(GeocoderElCache geocodingElCache) {
+        this.geocoderElCache = geocodingElCache;
+        this.geocoderGoogleServiceDelegate.setGeocoderElCache(geocodingElCache);
     }
 
     /**
      * Default constructor create each service delegate.
      */
-    public GeocodingRestServiceImpl() {
-        this.geocodingGoogleServiceDelegate = new GeocodingGoogleServiceImpl();
+    public GeocoderRestServiceImpl() {
+        this.geocoderGoogleServiceDelegate = new GeocoderGoogleServiceImpl();
     }
-    
+
     @Override
     public List<GCGeocodingResult> executeGeocodignByAddress(String address, String language) {
-        return this.geocodingGoogleServiceDelegate.executeGeocodignByAddress(address, language);
+        return this.geocoderGoogleServiceDelegate.executeGeocoderByAddress(address, language);
     }
-    
+
     @Override
-    public List<ELGeocodingBean> suggestGeocodignByAddress(String address, String language)
+    public List<ELGeocodingBean> suggestGeocodignByAddress(String address)
             throws ResourceNotFoundFault {
-        return this.geocodingGoogleServiceDelegate.suggestGeocodingForAddress(address, language);
+        return this.geocoderGoogleServiceDelegate.suggestGeocodingForAddress(address);
     }
-    
+
 }

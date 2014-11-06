@@ -3,11 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.geosdi.geocoding.model;
+package org.geosdi.geocoder.model;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -49,6 +52,18 @@ public class GCAddressComponent implements Serializable {
      * This indicates the type of each part of the address. Examples include
      * street number or country.
      */
-    public GCAddressComponentType[] types;
+    @XmlElementWrapper(name = "typeList")
+    @XmlElement(name = "type")
+    public List<GCAddressComponentType> types;
+
+    @Override
+    public String toString() {
+//        String typestring = new String();
+//        for (GCAddressComponentType t : types) {
+//            typestring += "\n" + t.name();
+//        }
+        return "GCAddressComponent{" + "longName=" + longName
+                + ", shortName=" + shortName + ", types=" + types + '}';
+    }
 
 }

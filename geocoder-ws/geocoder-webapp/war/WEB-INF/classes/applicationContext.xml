@@ -37,9 +37,9 @@
     <!-- Service endpoints -->
     <!-- ====================================================================-->
     
-    <jaxrs:server id="geocodingServiceJSON" address="/json">
+    <jaxrs:server id="geocoderServiceJSON" address="/json">
         <jaxrs:serviceBeans>
-            <ref bean="geocodingRestService"/>
+            <ref bean="geocoderRestService"/>
         </jaxrs:serviceBeans>
         <jaxrs:extensionMappings> 
             <entry key="xml" value="application/xml" /> 

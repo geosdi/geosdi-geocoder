@@ -7,10 +7,12 @@
             http://www.springframework.org/schema/context
             http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
-    <context:component-scan base-package="org.geosdi.geocoding.cache"/>
+    <context:component-scan base-package="org.geosdi.geocoder.cache"/>
     
-    <bean name="geocodingElCache" class="org.geosdi.geocoding.cache.GeocodingElCache" 
+    <bean name="geocoderElCache" class="org.geosdi.geocoder.cache.GeocoderElCache" 
           destroy-method="cleanUp">
+        <constructor-arg name="hostname" index="0" value="localhost"/>
+        <constructor-arg name="port" index="1" value="9300" />
     </bean>
 
 </beans>
