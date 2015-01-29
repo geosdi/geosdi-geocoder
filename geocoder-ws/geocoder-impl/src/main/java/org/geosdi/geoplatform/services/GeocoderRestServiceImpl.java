@@ -72,14 +72,17 @@ public class GeocoderRestServiceImpl implements GeocoderRestService {
     }
 
     @Override
-    public List<GCGeocodingResult> executeGeocodignByAddress(String address, String language) {
-        return this.geocoderGoogleServiceDelegate.executeGeocoderByAddress(address, language);
+    public List<GCGeocodingResult> executeGeocodignByAddress(String address,
+            String language) {
+        return this.geocoderGoogleServiceDelegate.executeGeocoderByAddress(
+                address, language);
     }
 
     @Override
     public List<ELGeocodingBean> suggestGeocodignByAddress(String address)
             throws ResourceNotFoundFault {
-        return this.geocoderGoogleServiceDelegate.suggestGeocodingForAddress(address);
+        return this.geocoderGoogleServiceDelegate.suggestGeocodingForAddress(
+                address);
     }
 
 }

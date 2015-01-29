@@ -13,13 +13,7 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>
             classpath*:applicationContext.xml
-            classpath*:applicationContext-Service.xml
         </param-value>
-    </context-param>
-    
-    <context-param>
-        <param-name>spring.profiles.active</param-name>
-        <param-value>jpa</param-value>
     </context-param>
   
     <!-- CXF Servlet -->
@@ -33,5 +27,11 @@
         <servlet-name>CXFServlet</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
+    
+    <listener>
+        <listener-class>
+            org.springframework.web.context.request.RequestContextListener
+        </listener-class>
+    </listener>
 
 </web-app>

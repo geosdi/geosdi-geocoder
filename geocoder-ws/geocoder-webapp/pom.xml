@@ -24,23 +24,12 @@
             <version>${project.version}</version>
         </dependency>
         
-        <!-- logging dependencies, delegate all to slf4j and use logback -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-service-description</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-        </dependency>
+      
+        
         <!-- =============================================================== -->
         <!-- SPRING -->
         <!-- =============================================================== -->
@@ -58,220 +47,32 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-        </dependency>
-        
-        <!-- =============================================================== -->
-        <!-- CXF -->
-        <!-- =============================================================== -->
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http-jetty</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxws</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-bindings-soap</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-databinding-aegis</artifactId>
-        </dependency>
-        <!--        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-core</artifactId>
-        </dependency>-->
-        <!--        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-api</artifactId>
-        </dependency>-->
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-simple</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.ws.xmlschema</groupId>
-            <artifactId>xmlschema-core</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.opensaml</groupId>
-            <artifactId>opensaml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opensaml</groupId>
-            <artifactId>xmltooling</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-databinding-jaxb</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>wsdl4j</groupId>
-            <artifactId>wsdl4j</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.santuario</groupId>
-            <artifactId>xmlsec</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>batik-ext</artifactId>
-            <version>${batik-ext-version}</version>
-        </dependency>
-
-        <dependency> 
-            <groupId>org.apache.cxf</groupId> 
-            <artifactId>cxf-rt-frontend-jaxrs</artifactId> 
-        </dependency> 
-        <dependency> 
-            <groupId>org.apache.cxf</groupId> 
-            <artifactId>cxf-rt-rs-extension-providers</artifactId> 
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jettison</groupId>
-            <artifactId>jettison</artifactId>
-            <version>${jettison-version}</version>
-        </dependency>
-        <dependency> 
-            <groupId>org.apache.xmlbeans</groupId> 
-            <artifactId>xmlbeans-xmlpublic</artifactId> 
-            <version>${xmlbeans-version}</version>
-        </dependency>
-        
-        <!--Here-->
-<!--        <dependency>
-            <groupId>javax.xml.ws</groupId>
-            <artifactId>jaxws-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-ws-security</artifactId>
-        </dependency>
-                        
-        <dependency>
-            <groupId>org.geosdi</groupId>
-            <artifactId>geoplatform-cxf-server-configurator</artifactId>
-            <version>${geoplatform-version}</version>
-        </dependency>-->
-        
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit-version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
     
     <build>
-        <defaultGoal>jetty:run</defaultGoal>
-        <!-- Name of the generated WAR file -->
         <finalName>geocoder-services</finalName>
         
-        <outputDirectory>war/WEB-INF/classes</outputDirectory>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.17</version>
-                <executions>
-                    <execution>
-                        <id>failsafe-integration-test</id>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>integration-test</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>failsafe-verify</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <warSourceDirectory>war</warSourceDirectory>
-                </configuration>
-            </plugin>
-            
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>${jetty-version}</version>
+                <version>8.1.16.v20140903</version>
                 <configuration>
+                    <contextXml>${basedir}/src/main/webapp/WEB-INF/jetty-context.xml</contextXml>
                     <scanIntervalSeconds>0</scanIntervalSeconds>
-                    <stopKey>kill</stopKey>
-                    <stopPort>9797</stopPort>
+                    <stopKey>foo</stopKey>
+                    <stopPort>9999</stopPort>
                     <webApp>
                         <contextPath>/geocoder-services</contextPath>
                     </webApp>
-                    <contextXml>${basedir}/war/WEB-INF/jetty-context.xml</contextXml>
-                    <webXml>${basedir}/war/WEB-INF/web.xml</webXml>
                     <connectors>
                         <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
                             <port>3838</port>
                             <maxIdleTime>60000</maxIdleTime>
                         </connector>
                     </connectors>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.cargo</groupId>
-                <artifactId>cargo-maven2-plugin</artifactId>
-                <version>${cargo-version}</version>
-                <configuration>
-                    <container>
-                        <containerId>jetty8x</containerId>
-                        <type>embedded</type>
-                    </container>
-                    <configuration>
-                        <type>standalone</type>
-                        <properties>
-                            <cargo.servlet.port>8787</cargo.servlet.port>
-                            <cargo.logging>high</cargo.logging>
-                        </properties>
-                    </configuration>  
-                    <deployables>
-                        <deployable>
-                            <groupId>org.geosdi</groupId>
-                            <artifactId>geocoder-webapp</artifactId>
-                            <type>war</type>
-                            <properties>
-                                <context>/geocoder-services</context>
-                            </properties>
-                        </deployable>                           
-                    </deployables>
                 </configuration>
             </plugin>
         </plugins>

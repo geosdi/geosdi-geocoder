@@ -23,8 +23,9 @@
         </dependency>
         
         <dependency>
-            <groupId>com.google.maps</groupId>
-            <artifactId>google-maps-services</artifactId>
+            <groupId>org.geosdi</groupId>
+            <artifactId>geoplatform-ws-base-util</artifactId>
+            <version>${geoplatform-version}</version>
         </dependency>
         
         <!-- CXF -->
@@ -32,22 +33,6 @@
             <groupId>org.apache.cxf</groupId> 
             <artifactId>cxf-rt-frontend-jaxrs</artifactId> 
         </dependency> 
-        <dependency>
-            <groupId>org.codehaus.jra</groupId>
-            <artifactId>jra</artifactId>
-            <version>${jra-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.vividsolutions</groupId>
-            <artifactId>jts</artifactId>
-            <version>${jts-version}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.geosdi</groupId>
-            <artifactId>geoplatform-ws-base-util</artifactId>
-            <version>${geoplatform-version}</version>
-        </dependency>
         
         <!-- logging dependencies, delegate all to slf4j and use logback -->
         <dependency>

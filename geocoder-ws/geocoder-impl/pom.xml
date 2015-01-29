@@ -28,57 +28,22 @@
             <version>${guava-version}</version>
         </dependency>
         
-        <!-- CXF -->
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-ws-security</artifactId>
+            <groupId>org.geosdi</groupId>
+            <artifactId>geoplatform-cxf-rs-provider-support</artifactId>
+            <version>${geoplatform-version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>${xerces-version}</version>
-        </dependency>
-        <!-- CXF Rest -->
+        
+        <!-- =============================================================== -->
+        <!-- ======================== CXF  Rest ============================ -->
+        <!-- =============================================================== -->
         <dependency> 
             <groupId>org.apache.cxf</groupId> 
             <artifactId>cxf-rt-frontend-jaxrs</artifactId> 
         </dependency> 
         <dependency> 
             <groupId>org.apache.cxf</groupId> 
-            <artifactId>cxf-rt-databinding-aegis</artifactId> 
-        </dependency> 
-        
-        <!-- SPRING -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-            
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-acl</artifactId>
+            <artifactId>cxf-rt-rs-extension-providers</artifactId> 
         </dependency>
         
         <!-- logging dependencies, delegate all to slf4j and use logback -->
@@ -86,26 +51,17 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-        
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
         </dependency>
-        
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
         </dependency>
-        
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
     
