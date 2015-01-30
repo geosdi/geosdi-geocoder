@@ -11,7 +11,7 @@
     
     <bean name="geocoderElCache" class="org.geosdi.geocoder.cache.GeocoderElCache" 
           destroy-method="cleanUp">
-        <constructor-arg name="hostname" index="0" value="150.145.133.107"/>
+        <constructor-arg name="hostname" index="0" value="localhost"/>
         <constructor-arg name="port" index="1" value="9300" />
     </bean>
 
