@@ -61,8 +61,8 @@ public class GeocoderElCache implements InitializingBean {
 
 //    Node node = nodeBuilder().client(true).node();
 //    Client client = node.client();
-    Client client;
-    ObjectMapper mapper = new ObjectMapper();
+    private Client client;
+    private ObjectMapper mapper = new ObjectMapper();
 
     public GeocoderElCache() {
     }

@@ -15,7 +15,7 @@
         <junit-version>4.11</junit-version>
         <geoplatform-version>1.7-SNAPSHOT</geoplatform-version>
         <guava-version>18.0</guava-version>
-        <elasticsearch-version>1.4.1</elasticsearch-version>
+        <elasticsearch-version>1.5.0</elasticsearch-version>
         <google-maps-services-version>0.1.4</google-maps-services-version>
     </properties>
 
