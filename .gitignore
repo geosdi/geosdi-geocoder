@@ -1,3 +1,12 @@
+/geocoder-ws/geocoder-api/geocoder-api.iml
+/geocoder-ws/geocoder-impl/geocoder-impl.iml
+/geocoder-ws/geocoder-ws.iml
+/geocoder-ws/geocoder-webapp/geocoder-webapp.iml
+/geocoder-core/geocoder-model/geocoder-model.iml
+/geosdi-geocoder.iml
+/geocoder-core/geocoder-core.iml
+/geocoder-core/geocoder-cache/geocoder-cache.iml
+/.idea
 *.class
 
 # Mobile Tools for Java (J2ME)

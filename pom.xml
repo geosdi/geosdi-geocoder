@@ -13,7 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.7</java.version>
         <junit-version>4.11</junit-version>
-        <geoplatform-version>1.7-SNAPSHOT</geoplatform-version>
+        <geoplatform-version>1.8-SNAPSHOT</geoplatform-version>
         <guava-version>18.0</guava-version>
         <elasticsearch-version>1.5.0</elasticsearch-version>
         <google-maps-services-version>0.1.4</google-maps-services-version>
